@@ -373,9 +373,9 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
     private TreapNode add (E key, P priority, TreapNode x) throws ElementFoundException {
 
-        if (x.element == key) {
+        if (x.element.equals(key)) {
             throw new ElementFoundException();
-        } else if (key < x.element) {
+        } else if (key.compareTo(x.element) == -1) {
             if (x.left == null) {
                 x.left = new TreapNode(key, priority);
             } else {
