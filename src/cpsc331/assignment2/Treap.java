@@ -237,7 +237,23 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
     private void leftRotate (TreapNode z) {
 
-        // For You To Complete
+        TreapNode y = z.right;
+        z.right = y.left;
+        if(y.left != null) {
+            y.left.parent = z;
+        }
+        y.parent = z.parent;
+        if(y.parent == null) {
+            root = y;
+        } else if(z == z.parent.left) {
+            z.parent.left = y;
+        } else {
+            z.parent.right = y;
+        }
+        y.left = z;
+        z.parent = y;
+
+
     }
 
     //
@@ -254,7 +270,21 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
     private void rightRotate (TreapNode z) {
 
-        // For You To Complete
+        TreapNode y = z.left;
+        z.left = y.right;
+        if(y.right != null) {
+            y.right.parent = z;
+        }
+        y.parent = z.parent;
+        if(y.parent == null) {
+            root = y;
+        } else if(z == z.parent.right) {
+            z.parent.right = y;
+        } else {
+            z.parent.left = y;
+        }
+        y.right = z;
+        z.parent = y;
 
     }
 
@@ -371,7 +401,17 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
     private void restoreAfterInsertion (TreapNode x) {
 
-        // For You To Complete
+        if(x == null)
+            return;
+
+
+
+        restoreAfterInsertion(x.left);
+
+
+
+        restoreAfterInsertion(x.right);
+
 
     }
 
