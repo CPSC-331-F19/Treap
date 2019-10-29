@@ -211,9 +211,15 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
     private TreapNode get(E key, TreapNode x) throws NoSuchElementException {
 
-        // For You To Complete
-
-        throw new NoSuchElementException("This line should be replaced.");
+        if(x == null) {
+            throw new NoSuchElementException();
+        } else if (key < x.key) {
+            return get(key, x.left);
+        } else if (key > x.key) {
+            return get(key, x.right);
+        } else {
+            return x.value;
+        }
 
     }
 
@@ -365,12 +371,23 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
     //    is not the root, then the priority of this new leaf may be
     //    greater than the priority of its parent.
 
-    private TreapNode add (E key, P priority, TreapNode x)
-            throws ElementFoundException {
+    private TreapNode add (E key, P priority, TreapNode x) throws ElementFoundException {
 
-        // For You To Complete
-
-        throw new ElementFoundException("This lins should be replaced.");
+        if (x.element == key) {
+            throw new ElementFoundException();
+        } else if (key < x.element) {
+            if (x.left == null) {
+                x.left = new TreapNode(key, priority);
+            } else {
+                x.left.add(key, priority, x.left);
+            }
+        } else if (key > x.element) {
+            if (x.right == null) {
+                x.right = new TreapNode(key, priority);
+            } else {
+                x.right.add(key, priority, x.right);
+            }
+        }
 
     }
 
@@ -404,6 +421,15 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
         if(x == null)
             return;
 
+        if(x.parent == null) {
+
+        }
+
+        if(x.parent.priority < x.priority) {
+            if(x.right == null) {
+                rightRotate(x);
+            }
+        }
 
 
         restoreAfterInsertion(x.left);
