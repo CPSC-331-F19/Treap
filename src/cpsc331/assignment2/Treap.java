@@ -418,25 +418,15 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
     private void restoreAfterInsertion (TreapNode x) {
 
-        if(x == null)
-            return;
-
-        if(x.parent == null) {
-
-        }
-
-        if(x.parent.priority < x.priority) {
-            if(x.right == null) {
+        if(x.priority > x.parent.priority) {
+            if(x.parent.left == x) {
                 rightRotate(x);
+            } else if (x.parent.right == x) {
+                leftRotate(x);
             }
         }
 
-
-        restoreAfterInsertion(x.left);
-
-
-
-        restoreAfterInsertion(x.right);
+        return;
 
 
     }
