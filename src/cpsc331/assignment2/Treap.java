@@ -213,12 +213,12 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
         if(x == null) {
             throw new NoSuchElementException();
-        } else if (key < x.key) {
+        } else if (key.compareTo(x.element) == -1) {
             return get(key, x.left);
-        } else if (key > x.key) {
+        } else if (key.compareTo(x.element) == 1) {
             return get(key, x.right);
         } else {
-            return x.value;
+            return x;
         }
 
     }
@@ -329,18 +329,12 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
     // b) This Treap satisfies the Treap properties given above.
 
     public void insert (E key, P priority) throws ElementFoundException {
-
         if (root == null) {
-
             root = new TreapNode(key, priority);
-
         } else {
-
             TreapNode x = add(key, priority, root);
             restoreAfterInsertion(x);
-
         }
-
     }
 
     // Inserts a given element, with a given priority, into the subtree
@@ -373,22 +367,26 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
 
     private TreapNode add (E key, P priority, TreapNode x) throws ElementFoundException {
 
-        if (x.element.equals(key)) {
-            throw new ElementFoundException();
+        if (key.compareTo(x.element) == 0) {
+            throw new ElementFoundException("exception");
         } else if (key.compareTo(x.element) == -1) {
             if (x.left == null) {
                 x.left = new TreapNode(key, priority);
+                x.left.parent = x;
+                return x.left;
             } else {
-                x.left.add(key, priority, x.left);
+                return add(key, priority, x.left);
             }
-        } else if (key > x.element) {
+        } else if (key.compareTo(x.element) == 1) {
             if (x.right == null) {
                 x.right = new TreapNode(key, priority);
+                x.right.parent = x;
+                return x.right;
             } else {
-                x.right.add(key, priority, x.right);
+                return add(key, priority, x.right);
             }
         }
-
+        return null;
     }
 
     // Restores Treap properties after insertion of a new node
@@ -417,18 +415,24 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
     //    Treap properties given above.
 
     private void restoreAfterInsertion (TreapNode x) {
-
-        if(x.priority > x.parent.priority) {
-            if(x.parent.left == x) {
-                rightRotate(x);
-            } else if (x.parent.right == x) {
-                leftRotate(x);
+        if(x.priority.compareTo(x.parent.priority()) == 1) {
+            if (x.parent.left() != null) {
+                if(x.parent.left().equals(x)) {
+                    rightRotate(x.parent);
+                } else {
+                    leftRotate(x.parent);
+                }
+            } else if (x.parent.right() != null) {
+                if (x.parent.right().equals(x)) {
+                    leftRotate(x.parent);
+                } else {
+                    rightRotate(x.parent);
+                }
             }
         }
-
-        return;
-
-
+        if (x.parent() != null && x.priority.compareTo(x.parent.priority()) == 1) {
+            restoreAfterInsertion(x);
+        }
     }
 
     // *******************************************************************
