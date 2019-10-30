@@ -415,19 +415,24 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
     //    Treap properties given above.
 
     private void restoreAfterInsertion (TreapNode x) {
-
         if(x.priority.compareTo(x.parent.priority()) == 1) {
             if (x.parent.left() != null) {
                 if(x.parent.left().equals(x)) {
                     rightRotate(x.parent);
+                } else {
+                    leftRotate(x.parent);
                 }
             } else if (x.parent.right() != null) {
                 if (x.parent.right().equals(x)) {
                     leftRotate(x.parent);
+                } else {
+                    rightRotate(x.parent);
                 }
             }
         }
-
+        if (x.parent() != null && x.priority.compareTo(x.parent.priority()) == 1) {
+            restoreAfterInsertion(x);
+        }
     }
 
     // *******************************************************************
