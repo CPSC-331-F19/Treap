@@ -515,8 +515,75 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
         } else if (key.compareTo(x.element) == 1) {
             return deleteFromSubtree(key, x.right);
         } else {
-            return x;
+            if (x.left == null) {
+                if (x.right == null) {
+                    // case 1: leaf node or root
+                    if (x.parent == null) {
+                        root = null;
+                    } else {
+                        TreapNode parent = x.parent;
+                        if (x.element.compareTo(parent.element) == -1) {
+                            parent.left = null;
+                        } else {
+                            parent.right = null;
+                        }
+                    }
+                } else {
+                    // case 2: left child is null but right child is not
+                    TreapNode rightChild = x.right;
+                    if (x.parent == null) {
+                        rightChild.parent = null;
+                        root = rightChild;
+                    } else {
+                        TreapNode parent = x.parent;
+                        if (x.element.compareTo(parent.element) == -1) {
+                            parent.left = rightChild;
+                        } else {
+                            parent.right = rightChild;
+                        }
+                        rightChild.parent = parent;
+                    }
+                }
+            } else if (x.right == null) {
+                // case 3: left child is not null but right child is
+                TreapNode leftChild = x.left;
+                if (x.parent == null) {
+                    leftChild.parent = null;
+                    root = leftChild;
+                } else {
+                    TreapNode parent = x.parent;
+                    if (x.element.compareTo(parent.element) == -1) {
+                        parent.left = leftChild;
+                    } else {
+                        parent.right = leftChild;
+                    }
+                    leftChild.parent = parent;
+                }
+            } else if (x.left != null && x.right != null) {
+                // case 4: Neither the left nor the right of x is null - need to rotate here
+                TreapNode successor = successor(x);
+                x.element = successor.element;
+                x.priority = successor.priority;
+                deleteFromSubtree(successor.element, successor);
+                return x;
+            }
         }
+        return null;
+    }
+
+    /**
+     * 
+     * @param x
+     * @return
+     */
+    private TreapNode successor(TreapNode x) {
+        TreapNode y = x.right;
+        if (y.left != null) {
+            while (y.left != null) {
+                y = y.left;
+            }
+        } 
+        return y;
     }
 
     // Restores Treap properties after a node has been deleted.
@@ -550,52 +617,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
     // and right subtrees of x
 
     private void restoreAfterDeletion(TreapNode x) {
-        if (x.left == null) {
-            if (x.right == null) {
-                // case 1: leaf node or root
-                if (x.parent == null) {
-                    root = null;
-                } else {
-                    TreapNode parent = x.parent;
-                    if (x.element.compareTo(parent.element) == -1) {
-                        parent.left = null;
-                    } else {
-                        parent.right = null;
-                    }
-                }
-            } else {
-                // case 2: left child is null but right child is not
-                TreapNode rightChild = x.right;
-                if (x.parent == null) {
-                    rightChild.parent = null;
-                    root = rightChild;
-                } else {
-                    TreapNode parent = x.parent;
-                    if (x.element.compareTo(parent.element) == -1) {
-                        parent.left = rightChild;
-                    } else {
-                        parent.right = rightChild;
-                    }
-                    rightChild.parent = parent;
-                }
-            }
-        } else if (x.right == null) {
-            // case 3: left child is not null but right child is
-            TreapNode leftChild = x.left;
-            if (x.parent == null) {
-                leftChild.parent = null;
-                root = leftChild;
-            } else {
-                TreapNode parent = x.parent;
-                if (x.element.compareTo(parent.element) == -1) {
-                    parent.left = leftChild;
-                } else {
-                    parent.right = leftChild;
-                }
-                leftChild.parent = parent;
-            }
-        } else {
-            // case 4: Neither the left nor the right of x is null - need to rotate here
+        if (x.left != null && x.right != null) {
             if (x.left.priority.compareTo(x.right.priority) == 1) {
                 rightRotate(x);
             } else {
