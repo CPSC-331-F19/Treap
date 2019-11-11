@@ -459,7 +459,20 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
         if (root != null) {
             TreapNode z = deleteFromSubtree(key, root);
             if (z != null) {
+                
+                System.out.println("Pre-Rotation: successor(" + z.element + "," + z.priority + ")");
+                if (z.left != null)
+                    System.out.println("Pre-Rotation: left(" + z.left.element + "," + z.left.priority + ")");
+                if (z.right != null)
+                    System.out.println("Pre-Rotation: right(" + z.right.element + "," + z.right.priority + ")");
+
                 restoreAfterDeletion(z);
+
+                System.out.println("Post-Rotation: successor(" + z.element + "," + z.priority + ")");
+                if (z.left != null)
+                    System.out.println("Post-Rotation: left(" + z.left.element + "," + z.left.priority + ")");
+                if (z.right != null)
+                    System.out.println("Post-Rotation: right(" + z.right.element + "," + z.right.priority + ")");
             }
         } else {
             throw new NoSuchElementException(key.toString() + " not found.");
@@ -515,9 +528,25 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
         } else if (key.compareTo(x.element) == 1) {
             return deleteFromSubtree(key, x.right);
         } else {
+
+            System.out.println("Pre-Deletion: x(" + x.element + "," + x.priority + ")");
+            if (x.left != null) {
+                System.out.println("Pre-Deletion: left(" + x.left.element + "," + x.left.priority + ")");
+            }
+            if (x.right != null) {
+                System.out.println("Pre-Deletion: right(" + x.right.element + "," + x.right.priority + ")");
+                if (x.right.left != null) {
+                    System.out.println("Pre-Deletion: right->left(" + x.right.left.element + "," + x.right.left.priority + ")");
+                }
+                if (x.right.right != null) {
+                    System.out.println("Pre-Deletion: right->right(" + x.right.right.element + "," + x.right.right.priority + ")");
+                }
+            }
+
             if (x.left == null) {
                 if (x.right == null) {
                     // case 1: leaf node or root
+                    System.out.println("Case 1");
                     if (x.parent == null) {
                         root = null;
                     } else {
@@ -530,6 +559,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                     }
                 } else {
                     // case 2: left child is null but right child is not
+                    System.out.println("Case 2");
                     TreapNode rightChild = x.right;
                     if (x.parent == null) {
                         rightChild.parent = null;
@@ -546,6 +576,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 }
             } else if (x.right == null) {
                 // case 3: left child is not null but right child is
+                System.out.println("Case 3");
                 TreapNode leftChild = x.left;
                 if (x.parent == null) {
                     leftChild.parent = null;
@@ -561,6 +592,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 }
             } else if (x.left != null && x.right != null) {
                 // case 4: Neither the left nor the right of x is null - need to rotate here
+                System.out.println("Case 4");
                 TreapNode successor = successor(x);
                 x.element = successor.element;
                 x.priority = successor.priority;
@@ -582,6 +614,9 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
             while (y.left != null) {
                 y = y.left;
             }
+            successor(y);
+        } else if (y.right != null) {
+            return successor(y);
         } 
         return y;
     }
@@ -619,11 +654,29 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
     private void restoreAfterDeletion(TreapNode x) {
         if (x.left != null && x.right != null) {
             if (x.left.priority.compareTo(x.right.priority) == 1) {
+                System.out.println("1");
                 rightRotate(x);
-            } else {
+            } else if (x.left.priority.compareTo(x.right.priority) == -1) {
+                System.out.println("2");
                 leftRotate(x);
+            } else {
+                System.out.println("wow");
             }
             restoreAfterDeletion(x);
+        } else if (x.left != null && x.right == null) {
+            if (x.left.priority.compareTo(x.priority) == 1) {
+                System.out.println("3");
+                rightRotate(x);
+                restoreAfterDeletion(x);
+            }
+        } else if ((x.left == null && x.right != null)) {
+            if (x.right.priority.compareTo(x.priority) == 1) {
+                System.out.println("4");
+                leftRotate(x);
+                restoreAfterDeletion(x);
+            }
+        } else {
+            System.out.println("5");
         }
     }
 
