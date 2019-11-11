@@ -614,8 +614,8 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
             while (y.left != null) {
                 y = y.left;
             }
-            successor(y);
-        } else if (y.right != null) {
+        } 
+        if (y.right != null) {
             return successor(y);
         } 
         return y;
