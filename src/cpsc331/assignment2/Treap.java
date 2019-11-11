@@ -571,7 +571,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
             if (x.left == null) {
                 if (x.right == null) {
                     // case 1: leaf node or root
-                    System.out.println("Case 1");
+                    // System.out.println("Case 1");
                     if (x.parent == null) {
                         root = null;
                     } else {
@@ -584,7 +584,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                     }
                 } else {
                     // case 2: left child is null but right child is not
-                    System.out.println("Case 2");
+                    // System.out.println("Case 2");
                     TreapNode rightChild = x.right;
                     if (x.parent == null) {
                         rightChild.parent = null;
@@ -601,7 +601,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 }
             } else if (x.right == null) {
                 // case 3: left child is not null but right child is
-                System.out.println("Case 3");
+                // System.out.println("Case 3");
                 TreapNode leftChild = x.left;
                 if (x.parent == null) {
                     leftChild.parent = null;
@@ -617,7 +617,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 }
             } else if (x.left != null && x.right != null) {
                 // case 4: Neither the left nor the right of x is null - need to rotate here
-                System.out.println("Case 4");
+                // System.out.println("Case 4");
                 TreapNode successor = successor(x, null);
                 x.element = successor.element;
                 x.priority = successor.priority;
@@ -648,22 +648,6 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
             successor(y, min);
         }
         return min;
-
-        // if (x.right != null)
-        // return treeMin(x.right);
-        // TreapNode y = x.parent;
-        // while (y != null && x == y.right) {
-        // x = y;
-        // y = y.parent;
-        // }
-        // return y;
-    }
-
-    private TreapNode treeMin(TreapNode x) {
-        while (x.left != null) {
-            x = x.left;
-        }
-        return x;
     }
 
     // Restores Treap properties after a node has been deleted.
@@ -726,17 +710,6 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 leftRotate(x);
             }
             restoreAfterDeletion(x);
-        } else {
-            while (x.left != null) {
-                if (x.left.priority.compareTo(x.priority) == -1) {
-                    restoreAfterDeletion(x.left);
-                } 
-            }
-            while (x.right != null) {
-                if (x.right.priority.compareTo(x.priority) == -1) {
-                    restoreAfterDeletion(x.right);
-                } 
-            }
         }
     }
 
