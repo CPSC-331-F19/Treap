@@ -546,32 +546,9 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
         } else if (key.compareTo(x.element) == 1) {
             return deleteFromSubtree(key, x.right);
         } else {
-
-            System.out.println("Pre-Deletion: x(" + x.element + "," + x.priority + ")");
-
-            if (x.left != null) {
-                System.out.println("Pre-Deletion: left(" + x.left.element + "," + x.left.priority + ")");
-                if (x.left.left != null) {
-                    System.out.println("Pre-Deletion: left->left(" + x.left.left.element + "," + x.left.left.priority + ")");
-                }
-                if (x.left.right != null) {
-                    System.out.println("Pre-Deletion: left->right(" + x.left.right.element + "," + x.left.right.priority + ")");
-                }
-            }
-            if (x.right != null) {
-                System.out.println("Pre-Deletion: right(" + x.right.element + "," + x.right.priority + ")");
-                if (x.right.left != null) {
-                    System.out.println("Pre-Deletion: right->left(" + x.right.left.element + "," + x.right.left.priority + ")");
-                }
-                if (x.right.right != null) {
-                    System.out.println("Pre-Deletion: right->right(" + x.right.right.element + "," + x.right.right.priority + ")");
-                }
-            }
-
             if (x.left == null) {
                 if (x.right == null) {
                     // case 1: leaf node or root
-                    // System.out.println("Case 1");
                     if (x.parent == null) {
                         root = null;
                     } else {
@@ -584,7 +561,6 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                     }
                 } else {
                     // case 2: left child is null but right child is not
-                    // System.out.println("Case 2");
                     TreapNode rightChild = x.right;
                     if (x.parent == null) {
                         rightChild.parent = null;
@@ -601,7 +577,6 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 }
             } else if (x.right == null) {
                 // case 3: left child is not null but right child is
-                // System.out.println("Case 3");
                 TreapNode leftChild = x.left;
                 if (x.parent == null) {
                     leftChild.parent = null;
@@ -617,7 +592,6 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 }
             } else if (x.left != null && x.right != null) {
                 // case 4: Neither the left nor the right of x is null - need to rotate here
-                // System.out.println("Case 4");
                 TreapNode successor = successor(x, null);
                 x.element = successor.element;
                 x.priority = successor.priority;
@@ -702,15 +676,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 leftRotate(x);
                 restoreAfterDeletion(x);
             }
-        } else if (x.parent != null && x.priority.compareTo(x.parent.priority) == 1) {
-            System.out.println("5");
-            if (x.equals(x.parent.left)) {
-                rightRotate(x);
-            } else {
-                leftRotate(x);
-            }
-            restoreAfterDeletion(x);
-        }
+        } 
     }
 
     // *******************************************************************
