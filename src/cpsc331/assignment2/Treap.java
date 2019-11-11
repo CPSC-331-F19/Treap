@@ -469,10 +469,24 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 restoreAfterDeletion(z);
 
                 System.out.println("Post-Rotation: successor(" + z.element + "," + z.priority + ")");
-                if (z.left != null)
-                    System.out.println("Post-Rotation: left(" + z.left.element + "," + z.left.priority + ")");
-                if (z.right != null)
-                    System.out.println("Post-Rotation: right(" + z.right.element + "," + z.right.priority + ")");
+                if (z.left != null) {
+                    System.out.println("Post-Rotation: z-left(" + z.left.element + "," + z.left.priority + ")");
+                    if (z.left.left != null) {
+                        System.out.println("Post-Rotation: z-left-left(" + z.left.left.element + "," + z.left.left.priority + ")");
+                    }
+                    if (z.left.right != null) {
+                        System.out.println("Post-Rotation: z-left-right(" + z.left.right.element + "," + z.left.right.priority + ")");
+                    }
+                }
+                if (z.right != null) {
+                    System.out.println("Post-Rotation: z-right(" + z.right.element + "," + z.right.priority + ")");
+                    if (z.right.left != null) {
+                        System.out.println("Post-Rotation: z-right-left(" + z.right.left.element + "," + z.right.left.priority + ")");
+                    }
+                    if (z.right.right != null) {
+                        System.out.println("Post-Rotation: z-right-right(" + z.right.right.element + "," + z.right.right.priority + ")");
+                    }
+                }
             }
         } else {
             throw new NoSuchElementException(key.toString() + " not found.");
@@ -609,16 +623,21 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
      * @return
      */
     private TreapNode successor(TreapNode x) {
-        TreapNode y = x.right;
-        if (y.left != null) {
-            while (y.left != null) {
-                y = y.left;
-            }
-        } 
-        if (y.right != null) {
-            return successor(y);
-        } 
+        if (x.right != null)
+            return treeMin(x.right);
+        TreapNode y = x.parent;
+        while (y != null && x == y.right) {
+            x = y;
+            y = y.parent;
+        }
         return y;
+    }
+
+    private TreapNode treeMin(TreapNode x) {
+        while (x.left != null) {
+            x = x.left;
+        }
+        return x;
     }
 
     // Restores Treap properties after a node has been deleted.
@@ -659,9 +678,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
             } else if (x.left.priority.compareTo(x.right.priority) == -1) {
                 System.out.println("2");
                 leftRotate(x);
-            } else {
-                System.out.println("wow");
-            }
+            } 
             restoreAfterDeletion(x);
         } else if (x.left != null && x.right == null) {
             if (x.left.priority.compareTo(x.priority) == 1) {
