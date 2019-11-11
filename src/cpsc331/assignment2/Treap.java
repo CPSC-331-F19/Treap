@@ -459,7 +459,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
         if (root != null) {
             TreapNode z = deleteFromSubtree(key, root);
             if (z != null) {
-                
+
                 System.out.println("Pre-Rotation: successor(" + z.element + "," + z.priority + ")");
                 if (z.left != null)
                     System.out.println("Pre-Rotation: left(" + z.left.element + "," + z.left.priority + ")");
@@ -472,19 +472,23 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 if (z.left != null) {
                     System.out.println("Post-Rotation: z-left(" + z.left.element + "," + z.left.priority + ")");
                     if (z.left.left != null) {
-                        System.out.println("Post-Rotation: z-left-left(" + z.left.left.element + "," + z.left.left.priority + ")");
+                        System.out.println(
+                                "Post-Rotation: z-left-left(" + z.left.left.element + "," + z.left.left.priority + ")");
                     }
                     if (z.left.right != null) {
-                        System.out.println("Post-Rotation: z-left-right(" + z.left.right.element + "," + z.left.right.priority + ")");
+                        System.out.println("Post-Rotation: z-left-right(" + z.left.right.element + ","
+                                + z.left.right.priority + ")");
                     }
                 }
                 if (z.right != null) {
                     System.out.println("Post-Rotation: z-right(" + z.right.element + "," + z.right.priority + ")");
                     if (z.right.left != null) {
-                        System.out.println("Post-Rotation: z-right-left(" + z.right.left.element + "," + z.right.left.priority + ")");
+                        System.out.println("Post-Rotation: z-right-left(" + z.right.left.element + ","
+                                + z.right.left.priority + ")");
                     }
                     if (z.right.right != null) {
-                        System.out.println("Post-Rotation: z-right-right(" + z.right.right.element + "," + z.right.right.priority + ")");
+                        System.out.println("Post-Rotation: z-right-right(" + z.right.right.element + ","
+                                + z.right.right.priority + ")");
                     }
                 }
             }
@@ -544,8 +548,15 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
         } else {
 
             System.out.println("Pre-Deletion: x(" + x.element + "," + x.priority + ")");
+
             if (x.left != null) {
                 System.out.println("Pre-Deletion: left(" + x.left.element + "," + x.left.priority + ")");
+                if (x.left.left != null) {
+                    System.out.println("Pre-Deletion: left->left(" + x.left.left.element + "," + x.left.left.priority + ")");
+                }
+                if (x.left.right != null) {
+                    System.out.println("Pre-Deletion: left->right(" + x.left.right.element + "," + x.left.right.priority + ")");
+                }
             }
             if (x.right != null) {
                 System.out.println("Pre-Deletion: right(" + x.right.element + "," + x.right.priority + ")");
@@ -607,7 +618,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
             } else if (x.left != null && x.right != null) {
                 // case 4: Neither the left nor the right of x is null - need to rotate here
                 System.out.println("Case 4");
-                TreapNode successor = successor(x);
+                TreapNode successor = successor(x, null);
                 x.element = successor.element;
                 x.priority = successor.priority;
                 deleteFromSubtree(successor.element, successor);
@@ -620,17 +631,32 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
     /**
      * 
      * @param x
+     * @param min
      * @return
      */
-    private TreapNode successor(TreapNode x) {
-        if (x.right != null)
-            return treeMin(x.right);
-        TreapNode y = x.parent;
-        while (y != null && x == y.right) {
-            x = y;
-            y = y.parent;
+    private TreapNode successor(TreapNode x, TreapNode min) {
+        TreapNode y = x.right;
+        min = y;
+        if (y.left != null) {
+            while (y.left != null) {
+                y = y.left;
+            }
+            if (y.element.compareTo(min.element) == -1)
+                min = y;
         }
-        return y;
+        if (y.right != null) {
+            successor(y, min);
+        }
+        return min;
+
+        // if (x.right != null)
+        // return treeMin(x.right);
+        // TreapNode y = x.parent;
+        // while (y != null && x == y.right) {
+        // x = y;
+        // y = y.parent;
+        // }
+        // return y;
     }
 
     private TreapNode treeMin(TreapNode x) {
@@ -678,7 +704,7 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
             } else if (x.left.priority.compareTo(x.right.priority) == -1) {
                 System.out.println("2");
                 leftRotate(x);
-            } 
+            }
             restoreAfterDeletion(x);
         } else if (x.left != null && x.right == null) {
             if (x.left.priority.compareTo(x.priority) == 1) {
@@ -692,8 +718,25 @@ public class Treap<E extends Comparable<E>, P extends Comparable<P>> {
                 leftRotate(x);
                 restoreAfterDeletion(x);
             }
-        } else {
+        } else if (x.parent != null && x.priority.compareTo(x.parent.priority) == 1) {
             System.out.println("5");
+            if (x.equals(x.parent.left)) {
+                rightRotate(x);
+            } else {
+                leftRotate(x);
+            }
+            restoreAfterDeletion(x);
+        } else {
+            while (x.left != null) {
+                if (x.left.priority.compareTo(x.priority) == -1) {
+                    restoreAfterDeletion(x.left);
+                } 
+            }
+            while (x.right != null) {
+                if (x.right.priority.compareTo(x.priority) == -1) {
+                    restoreAfterDeletion(x.right);
+                } 
+            }
         }
     }
 
